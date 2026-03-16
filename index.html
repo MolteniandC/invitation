@@ -8,47 +8,79 @@
     <meta property="og:description" content="探索義大利頂級家具設計美學，誠摯邀請您的蒞臨。">
     <meta property="og:image" content="https://drive.google.com/thumbnail?id=1W2_5he7cACzIywjxumT-zcv6DLJHYBv2&sz=w1000">
     <style>
-        body { margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #1a1a1a; touch-action: none; font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; }
-        .tilt-wrapper { width: 320px; height: 480px; perspective: 1000px; }
-        .card-flipper { position: relative; width: 100%; height: 100%; transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; cursor: pointer; }
-        .flipped { transform: rotateY(180deg); }
-        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.7); }
+        body { 
+            margin: 0; padding: 0; height: 100vh; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            background-color: #1a1a1a; touch-action: none; 
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+            overflow: hidden; /* 防止手機出現多餘捲軸 */
+        }
+
+        /* 響應式容器 */
+        .tilt-wrapper { 
+            width: 90vw;        /* 手機版佔螢幕 90% */
+            max-width: 350px;   /* 電腦版最大寬度限制 */
+            aspect-ratio: 1 / 1.5; /* 鎖定比例，確保圖片不變形 */
+            perspective: 1000px;
+        }
+
+        .card-flipper { 
+            position: relative; width: 100%; height: 100%; 
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d; cursor: pointer; 
+        }
         
-        /* 正面樣式與提示 */
+        .flipped { transform: rotateY(180deg); }
+        
+        .card-front, .card-back { 
+            position: absolute; width: 100%; height: 100%; 
+            backface-visibility: hidden; border-radius: 20px; 
+            overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.7); 
+        }
+
+        /* 正面樣式 */
         .card-front { 
             background-image: url('https://drive.google.com/thumbnail?id=1W2_5he7cACzIywjxumT-zcv6DLJHYBv2&sz=w1000'); 
             background-size: cover; background-position: center; 
             display: flex; align-items: flex-end; justify-content: center;
         }
+
         .flip-hint { 
-            margin-bottom: 20px; padding: 5px 15px; background: rgba(0,0,0,0.4); 
-            color: rgba(255,255,255,0.8); font-size: 12px; border-radius: 20px; 
+            margin-bottom: 20px; padding: 6px 16px; 
+            background: rgba(0,0,0,0.4); color: rgba(255,255,255,0.8); 
+            font-size: 13px; border-radius: 20px; 
             backdrop-filter: blur(5px); pointer-events: none;
         }
 
-        /* 背面樣式修正：使用指定色 #f2f0eb */
+        /* 背面樣式：配色 #f2f0eb */
         .card-back { 
-            background-color: #f2f0eb; 
-            transform: rotateY(180deg); 
+            background-color: #f2f0eb; transform: rotateY(180deg); 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            padding: 20px; box-sizing: border-box; text-align: center; 
+            padding: 30px; box-sizing: border-box; text-align: center; 
         }
         
-        .card-back h2 { color: #3a1b1b; margin-bottom: 10px; font-weight: 600; }
-        .card-back p { color: #000000; margin: 5px 0; font-size: 16px; font-weight: 500; }
+        .card-back h2 { color: #3a1b1b; margin-bottom: 12px; font-weight: 600; font-size: 22px; }
+        .card-back p { color: #000000; margin: 6px 0; font-size: 16px; font-weight: 500; }
         
+        /* 地圖按鈕 */
         .map-btn { 
-            margin-top: 30px; padding: 12px 35px; background-color: #000000; color: #ffffff; 
-            text-decoration: none; border-radius: 30px; font-weight: bold; transition: 0.3s;
+            margin-top: 35px; padding: 12px 40px; 
+            background-color: #000000; color: #ffffff; 
+            text-decoration: none; border-radius: 30px; 
+            font-weight: bold; transition: 0.3s;
         }
         .map-btn:hover { background-color: #333; transform: scale(1.05); }
 
-        #motion-btn { margin-top: 20px; background: none; color: #555; border: 1px solid #333; padding: 5px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; }
+        #motion-btn { 
+            margin-top: 25px; background: none; color: #555; 
+            border: 1px solid #444; padding: 6px 15px; 
+            border-radius: 20px; font-size: 12px; cursor: pointer; 
+        }
     </style>
 </head>
 <body>
 
-    <div class="tilt-wrapper" data-tilt data-tilt-gyroscope="true" data-tilt-max="15">
+    <div class="tilt-wrapper" data-tilt data-tilt-gyroscope="true" data-tilt-max="12">
         <div class="card-flipper" id="myCard" onclick="handleCardClick(event)">
             <div class="card-front">
                 <div class="flip-hint">點擊查看詳情 ↻</div>
@@ -72,7 +104,9 @@
         function handleCardClick(event) {
             document.getElementById('myCard').classList.toggle('flipped');
             if (!permissionRequested && typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-                DeviceOrientationEvent.requestPermission().then(res => { if (res == 'granted') permissionRequested = true; });
+                DeviceOrientationEvent.requestPermission().then(res => { 
+                    if (res == 'granted') permissionRequested = true; 
+                });
             }
         }
     </script>
