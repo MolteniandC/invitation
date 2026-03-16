@@ -13,14 +13,13 @@
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
             background-color: #1a1a1a; touch-action: none; 
             font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
-            overflow: hidden; /* 防止手機出現多餘捲軸 */
+            overflow: hidden; 
         }
 
-        /* 響應式容器 */
         .tilt-wrapper { 
-            width: 90vw;        /* 手機版佔螢幕 90% */
-            max-width: 350px;   /* 電腦版最大寬度限制 */
-            aspect-ratio: 1 / 1.5; /* 鎖定比例，確保圖片不變形 */
+            width: 90vw; 
+            max-width: 350px; 
+            aspect-ratio: 1 / 1.5; 
             perspective: 1000px;
         }
 
@@ -46,9 +45,10 @@
         }
 
         .flip-hint { 
-            margin-bottom: 20px; padding: 6px 16px; 
-            background: rgba(0,0,0,0.4); color: rgba(255,255,255,0.8); 
-            font-size: 13px; border-radius: 20px; 
+            margin-bottom: 20px; padding: 7px 18px; 
+            background: rgba(220, 20, 60, 0.6); 
+            color: rgba(255,255,255,0.95); 
+            font-size: 14px; border-radius: 20px; 
             backdrop-filter: blur(5px); pointer-events: none;
         }
 
@@ -56,15 +56,30 @@
         .card-back { 
             background-color: #f2f0eb; transform: rotateY(180deg); 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            padding: 30px; box-sizing: border-box; text-align: center; 
+            padding: 25px; box-sizing: border-box; text-align: center; 
         }
         
-        .card-back h2 { color: #3a1b1b; margin-bottom: 12px; font-weight: 600; font-size: 22px; }
+        /* 修改：合併後的日期樣式 */
+        .card-back .date-row { 
+            color: #666; 
+            font-size: 16px; 
+            letter-spacing: 1px;
+            margin-bottom: 5px; 
+            font-weight: 500;
+        }
+        
+        .card-back h2 { 
+            color: #3a1b1b; 
+            margin-top: 5px; 
+            margin-bottom: 12px; 
+            font-weight: 600; 
+            font-size: 22px; 
+        }
+        
         .card-back p { color: #000000; margin: 6px 0; font-size: 16px; font-weight: 500; }
         
-        /* 地圖按鈕 */
         .map-btn { 
-            margin-top: 35px; padding: 12px 40px; 
+            margin-top: 30px; padding: 12px 40px; 
             background-color: #000000; color: #ffffff; 
             text-decoration: none; border-radius: 30px; 
             font-weight: bold; transition: 0.3s;
@@ -82,11 +97,14 @@
 
     <div class="tilt-wrapper" data-tilt data-tilt-gyroscope="true" data-tilt-max="12">
         <div class="card-flipper" id="myCard" onclick="handleCardClick(event)">
+            
             <div class="card-front">
-                <div class="flip-hint">點擊查看詳情 ↻</div>
+                <div class="flip-hint">點擊查看詳情</div>
             </div>
 
             <div class="card-back">
+                <div class="date-row">4/9、4/10</div>
+                
                 <h2>誠摯邀請</h2>
                 <p>Molteni&C 新品發表會</p>
                 <p style="font-size: 14px; color: #666; margin-top: 10px;">探索義大利經典設計</p>
