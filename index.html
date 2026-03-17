@@ -17,103 +17,103 @@
         }
 
         .tilt-wrapper { 
-            width: 90vw; max-width: 350px; aspect-ratio: 1 / 1.5; perspective: 1000px;
+            width: 90vw; max-width: 350px; aspect-ratio: 1 / 1.5; perspective: 1500px;
         }
 
         .card-flipper { 
             position: relative; width: 100%; height: 100%; 
-            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 1s;
+            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
             transform-style: preserve-3d; cursor: pointer; 
-            box-shadow: 0 1px 1px rgba(0,0,0,0.15), 0 2px 2px rgba(0,0,0,0.15), 0 4px 4px rgba(0,0,0,0.15), 0 8px 8px rgba(0,0,0,0.15), 0 30px 60px rgba(0,0,0,0.7);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             border-radius: 20px;
         }
         
-        .flipping {
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3), 0 10px 30px rgba(0,0,0,0.3), 0 20px 60px rgba(0,0,0,0.3), 0 30px 90px rgba(0,0,0,0.3), 0 50px 120px rgba(0,0,0,0.8);
+        /* 修正手機穿透的核心：強制設定所有面與子元件的背後不可見 */
+        .card-front, .card-back, .flip-hint, .back-content {
+            backface-visibility: hidden !important;
+            -webkit-backface-visibility: hidden !important;
         }
 
         .card-front, .card-back { 
             position: absolute; width: 100%; height: 100%; 
-            backface-visibility: hidden; border-radius: 20px; 
-            overflow: hidden; border: 1px solid rgba(0,0,0,0.1); box-sizing: border-box;
+            border-radius: 20px; overflow: hidden; 
+            border: 1px solid rgba(0,0,0,0.1); box-sizing: border-box;
+            /* 觸發手機硬體加速 */
+            transform-style: preserve-3d;
         }
 
-        /* 正面樣式 */
+        /* 正面：往 Z 軸正向移動 0.5px */
         .card-front { 
             background-image: url('https://drive.google.com/thumbnail?id=1lMKH8uIRg_9PfNW7S-MjyI7lGBXlAxZG&sz=w1000'); 
             background-size: cover; background-position: center; 
             display: flex; align-items: flex-end; justify-content: center;
+            transform: rotateY(0deg) translateZ(0.5px);
+            z-index: 2;
         }
 
-        /* 金屬流光層 */
-        .metal-sheen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 45%, rgba(230,230,230,0.5) 50%, rgba(255,255,255,0) 55%, rgba(255,255,255,0) 100%);
-            background-size: 300% 300%; background-position: 0% 100%;
-            mix-blend-mode: overlay; pointer-events: none; opacity: 0; transition: opacity 0.1s; z-index: 1;
-        }
-
-        .sheen-active {
-            opacity: 1;
-            animation: metalSweep 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
-
-        @keyframes metalSweep {
-            0% { background-position: 0% 100%; }
-            100% { background-position: 100% 0%; }
-        }
-
+        /* 修正：提示框顏色與深度位移 */
         .flip-hint { 
-            margin-bottom: 20px; padding: 7px 18px; background: #3a1b1b; color: #ffffff; 
-            font-size: 14px; border-radius: 20px; backdrop-filter: blur(5px); pointer-events: none; z-index: 10;
+            margin-bottom: 25px; padding: 8px 20px; 
+            background: #3a1b1b; color: #ffffff; 
+            font-size: 14px; border-radius: 20px; 
+            pointer-events: none;
+            /* 將文字推離卡面，避免與背後的圖片重疊 */
+            transform: translateZ(10px); 
         }
 
-        /* 背面佈局修正 */
+        /* 背面：先轉 180 度，再往 Z 軸負向移動 0.5px */
         .card-back { 
-            background-color: #f2f0eb; transform: rotateY(180deg); position: relative;
+            background-color: #f2f0eb; 
+            transform: rotateY(180deg) translateZ(0.5px);
+            z-index: 1;
         }
 
         .back-content {
-            position: relative; z-index: 2; width: 100%; height: 100%;
+            width: 100%; height: 100%;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             padding: 30px; box-sizing: border-box; text-align: center;
+            /* 確保背面內容在自己的平面上 */
+            transform: translateZ(5px);
         }
-        
-        .card-back .date-row { color: #666; font-size: 16px; letter-spacing: 1px; margin-bottom: 5px; font-weight: 500; }
-        .card-back h2 { color: #3a1b1b; margin-top: 5px; margin-bottom: 12px; font-weight: 600; font-size: 22px; }
-        .card-back p { color: #000000; margin: 6px 0; font-size: 16px; font-weight: 500; }
-        
+
+        /* 其他元件保持不變 */
+        .date-row { color: #666; font-size: 16px; letter-spacing: 1px; margin-bottom: 5px; font-weight: 500; }
+        h2 { color: #3a1b1b; margin-top: 5px; margin-bottom: 12px; font-weight: 600; font-size: 22px; }
+        p { color: #000000; margin: 6px 0; font-size: 16px; font-weight: 500; }
         .map-btn { 
             margin-top: 30px; padding: 12px 40px; background-color: #000000; color: #ffffff; 
             text-decoration: none; border-radius: 30px; font-weight: bold; transition: 0.3s;
         }
-        .map-btn:hover { background-color: #333; transform: scale(1.05); }
 
-        #motion-btn { 
-            margin-top: 25px; background: none; color: #555; border: 1px solid #444; 
-            padding: 6px 15px; border-radius: 20px; font-size: 12px; cursor: pointer; 
+        /* 金屬流光 */
+        .metal-sheen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 45%, rgba(230,230,230,0.4) 50%, rgba(255,255,255,0) 55%, rgba(255,255,255,0) 100%);
+            background-size: 300% 300%; background-position: 0% 100%;
+            mix-blend-mode: overlay; pointer-events: none; opacity: 0; transition: opacity 0.1s;
         }
+        .sheen-active { opacity: 1; animation: metalSweep 1s forwards; }
+        @keyframes metalSweep { 0% { background-position: 0% 100%; } 100% { background-position: 100% 0%; } }
+
+        #motion-btn { margin-top: 30px; background: none; color: #444; border: 1px solid #333; padding: 5px 12px; border-radius: 20px; font-size: 11px; cursor: pointer; opacity: 0.6; }
     </style>
 </head>
 <body>
 
     <div class="tilt-wrapper" data-tilt data-tilt-gyroscope="true" data-tilt-max="12">
         <div class="card-flipper" id="myCard" onclick="handleCardClick(event)">
-            
             <div class="card-front">
                 <div class="metal-sheen" id="frontSheen"></div>
                 <div class="flip-hint">點擊查看詳情</div>
             </div>
-
             <div class="card-back">
                 <div class="metal-sheen" id="backSheen"></div>
-                
                 <div class="back-content">
                     <div class="date-row">4/9、4/10</div>
                     <h2>誠摯邀請</h2>
                     <p>Molteni&C 新品發表會</p>
                     <p style="font-size: 14px; color: #666; margin-top: 10px;">探索義大利經典設計</p>
-                    <a href="https://maps.app.goo.gl/yS3E1P5SUpYpYJpS9" target="_blank" class="map-btn" onclick="event.stopPropagation();">📍 開啟地圖導航</a>
+                    <a href="https://maps.app.goo.gl/9Jp2fS8y3C8" target="_blank" class="map-btn" onclick="event.stopPropagation();">📍 開啟地圖導航</a>
                     <p style="font-size: 11px; color: #999; margin-top: 25px;">(點擊卡片再次翻轉)</p>
                 </div>
             </div>
@@ -133,33 +133,24 @@
             const backSheen = document.getElementById('backSheen');
             const rect = card.getBoundingClientRect();
             const clickX = event.clientX - rect.left;
-            const midPoint = rect.width / 2;
-
-            // 物理感應翻轉
-            if (clickX < midPoint) {
+            
+            if (clickX < rect.width / 2) {
                 currentRotation -= 180; 
             } else {
                 currentRotation += 180; 
             }
 
             card.style.transform = `rotateY(${currentRotation}deg)`;
-            card.classList.add('flipping');
 
-            // 金屬流光掃過
+            // 流光動畫
             frontSheen.classList.remove('sheen-active');
             backSheen.classList.remove('sheen-active');
             void frontSheen.offsetWidth; 
             frontSheen.classList.add('sheen-active');
             backSheen.classList.add('sheen-active');
 
-            setTimeout(() => {
-                card.classList.remove('flipping');
-            }, 1000);
-            
             if (!permissionRequested && typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-                DeviceOrientationEvent.requestPermission().then(res => { 
-                    if (res == 'granted') permissionRequested = true; 
-                });
+                DeviceOrientationEvent.requestPermission().then(res => { if (res == 'granted') permissionRequested = true; });
             }
         }
     </script>
